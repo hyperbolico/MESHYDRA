@@ -1,6 +1,6 @@
 
 function openPopup() {
-  window.open("/ex.html", "width=400,height=400");
+  window.open("ex.html", "width=400,height=400");
 }
 
 
