@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <title>EX////</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/script.js" defer></script>
+    <script src="/pop.js" defer></script>
+    
+    <script src="https://unpkg.com/hydra-synth"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet"> 
+    
+    
+  </head>
+  
+  
+  <body>
+  
+
+    
+    <canvas id="myCanvas" width="1200px" height="900px"></canvas>
+    
+   
+    <script>
+      // create a new hydra-synth instance
+      var hydra = new Hydra({
+        canvas: document.getElementById("myCanvas"),
+        detectAudio: false
+      })
+      
+      
+osc(6,0.03,2).mult(shape(4).scale(2)).out(o1)
+
+src(o0).modulateHue(src(o0).scale(1.02),3).blend(o1,0.01).color(0,0,3).out()
+      
+      
+      
+      
+</script>
+    
+ <div id="snip">
+   <p id="titulo"><b>COPY / PASTE EN EL EDITOR DE HYDRA/3D >> <a href="https://meshydra.glitch.me/"target="_blank">(MESHYDRA)</a> </b></p>
+   <p id="c1">src(s0).pixelate([200,2,900,3].fast(8),20).out()</p>
+   <p id="c2">src(s0).modulateRepeat(osc(10), 3.0, 3.0, 0.5, 0.5).out()</p>
+   <p id="c3">src(s0).mult(noise(5, 2)).color(0, 0, 3).colorama(0.2)<br>
+     .out()</p>
+   <p id="c4">src(s0).kaleid(2).color(2.83,0.91,0.39).rotate(0, 0.1)<br>
+	.modulate(o0, () => mouse.x * 0.0003).scale(1.01).out()</p>
+   <p id="c5">src(s0).modulate(o0,0.5).add(o0,0.8).luma(0.3)<br>
+.diff(src(s0).scale(1)).out()</p>
+   
+   <p id="info"><sub>VARÍA LOS NÚMEROS Y LAS COMBINACIONES DE EFECTOS EN EL EDITOR, REVISA TODA LA DOCUMENTACIÓN  <a href="https://github.com/hydra-synth/hydra"target="_blank">AQUÍ</a> <br>
+     Y PRUEBA CON <a href="https://hydra.ojack.xyz/"target="_blank">HYDRA</a></sub><br>
+   /////////////////<br>
+   <sub>PUEDES REMIXEAR EL <a href="https://glitch.com/edit/#!/meshydra"target="_blank">CÓDIGO</a> DEL PROYECTO EN <a href="https://glitch.com/"target="_blank">GLITCH</a></sub></p>
+   
+   
+</div>   
+  
+  
+  
+</body>
+</html>
