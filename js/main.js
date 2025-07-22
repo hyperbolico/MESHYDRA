@@ -187,61 +187,58 @@ let sketch = function (p) {
   p.preload = function () {
     let gusano, head, crater, forma4, voronoi1, voronoi7, mosca;
     //modelo1;
-
+    
     gusano = p.loadModel(
-      "asset/gusano.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/gusano.obj",
       true
     );
-
+    
     //modelo2;
-
+    
     head = p.loadModel(
-      "asset/wormhead-light.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/wormhead-light.obj",
       true
     );
-
+    
     //modelo3;
-
+    
     crater = p.loadModel(
-      "asset/crater2.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/crater2.obj",
       true
     );
-
-
+   
+    
     //modelo4;
-
+    
     forma4 = p.loadModel(
-      "asset/shape4.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/shape4.obj",
       true
     );
-
-
+   
+    
     //modelo5;
-
+    
     voronoi1 = p.loadModel(
-      "asset/voronoi1.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/voronoi1.obj",
       true
     );
-
-
+    
+    
     //modelo5;
-
+    
     voronoi1 = p.loadModel(
-      "asset/voronoi1.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/voronoi1.obj",
       true
     );
-
-
-
+   
+    
+    
     //modelo6;
-
+    
     mosca = p.loadModel(
-      "asset/mosca.obj",
+      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/mosca.obj",
       true
     );
-
-
-
 
 
 
