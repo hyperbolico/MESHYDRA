@@ -2,6 +2,7 @@
 /* global CodeMirror */
 
 console.log("hi :)");
+
 let hydra, hydraCanvas;
 hydraCanvas = document.createElement("canvas");
 hydraCanvas.width = window.innerWidth;
@@ -14,6 +15,7 @@ hydraCanvas.style.height = "100%";
 hydraCanvas.style.top = 0;
 hydraCanvas.style.left = 0;
 hydraCanvas.getContext("webgl", { preserveDrawingBuffer: true });
+
 hydra = new Hydra({
   canvas: hydraCanvas,
   detectAudio: false,
@@ -24,16 +26,14 @@ hydra = new Hydra({
 
 document.querySelector(".placeholder").appendChild(hydraCanvas);
 
-/////////////
+///////////// CodeMirror /////////////
 
 const lastCode = `src(s0).out()`;
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
-//document.body.appendChild(container);
 container.appendChild(el);
 
 const cm = CodeMirror.fromTextArea(el, {
-  //theme: "paraiso-dark",
   theme: "night",
   value: "a",
   mode: { name: "javascript", globalVars: true },
@@ -41,7 +41,10 @@ const cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true,
 });
 cm.refresh();
-cm.setValue(lastCode);
+
+// Restaurar código previo desde localStorage (o usar el default)
+const savedCode = localStorage.getItem("hydracode");
+cm.setValue(savedCode || lastCode);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function (start, end) {
@@ -70,22 +73,15 @@ const getCurrentBlock = function () {
   while (endline < editor.lineCount() && cm.getLine(endline) !== "") {
     endline++;
   }
-  var pos1 = {
-    line: startline,
-    ch: 0,
-  };
-  var pos2 = {
-    line: endline,
-    ch: 0,
-  };
+  var pos1 = { line: startline, ch: 0 };
+  var pos2 = { line: endline, ch: 0 };
   var str = editor.getRange(pos1, pos2);
-
   flashCode(pos1, pos2);
-
   return str;
 };
 
 const editorConsoleText = document.getElementById("editor-console-text");
+
 function evalCode(c) {
   try {
     let result = eval(c);
@@ -98,12 +94,6 @@ function evalCode(c) {
     editorConsoleText.innerText = e;
     editorConsoleText.className = "error";
   }
-}
-
-{
-  // init
-  const code = cm.getValue();
-  // evalCode(code);
 }
 
 function toggleCode() {
@@ -159,94 +149,38 @@ for (const commandName of commandNames) {
   }
 }
 
-/////////////
+///////////// MIDI (preparado, sin conexión activa) /////////////
 
-
-
-//create an array to hold our cc values and init to a normalized value
 var cc = Array(128).fill(0.5);
 
 getMIDIMessage = function (midiMessage) {
   var arr = midiMessage.data;
   var index = arr[1];
-  //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
-  var val = (arr[2] + 1) / 128.0; // normalize CC values to 0.0 - 1.0
+  var val = (arr[2] + 1) / 128.0;
   cc[index] = val;
 };
-
-//s0.initCam()
 
 render(o0);
 
 console.log(cc[16]);
 
+///////////// p5 sketch /////////////
 
-let scale, rotY, rotX, rotZ, changeModel, button, models, randomModel, torus1;
-//let glitch2, capture, w = 800, h = 600;
+let scale, rotY, rotX, rotZ, changeModel, button, models, randomModel;
+
 let sketch = function (p) {
   p.preload = function () {
-    let gusano, head, crater, forma4, voronoi1, voronoi7, mosca;
-    //modelo1;
-    
-    gusano = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/gusano.obj",
-      true
-    );
-    
-    //modelo2;
-    
-    head = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/wormhead-light.obj",
-      true
-    );
-    
-    //modelo3;
-    
-    crater = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/crater2.obj",
-      true
-    );
-   
-    
-    //modelo4;
-    
-    forma4 = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/shape4.obj",
-      true
-    );
-   
-    
-    //modelo5;
-    
-    voronoi1 = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/voronoi1.obj",
-      true
-    );
-    
-    
-    //modelo5;
-    
-    voronoi1 = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/voronoi1.obj",
-      true
-    );
-   
-    
-    
-    //modelo6;
-    
-    mosca = p.loadModel(
-      "https://cdn.glitch.global/6d8e72f7-9a49-4a0c-80c6-bcbe8874a3fd/mosca.obj",
-      true
-    );
+    let gusano, head, crater, forma4, voronoi1, mosca;
 
+    // ✅ FIX: rutas locales en assets/
+    gusano = p.loadModel("assets/gusano.obj", true);
+    head = p.loadModel("assets/wormhead-light.obj", true);
+    crater = p.loadModel("assets/crater2.obj", true);
+    forma4 = p.loadModel("assets/shape4.obj", true);
+    voronoi1 = p.loadModel("assets/voronoi1.obj", true);
+    mosca = p.loadModel("assets/mosca.obj", true);
 
-
-
-
-
-    /* MODELOS MESH  LOAD*/
-
+    /* MODELOS MESH LOAD */
     models = [
       () => p.model(gusano),
       () => {
@@ -255,21 +189,21 @@ let sketch = function (p) {
       },
       () => {
         p.rotateX(Math.PI);
-        for (i = 0; i < 5; i++) {
-          p.translate(0,0,100);
-          p.rotateY(time*0.5)
+        for (let i = 0; i < 5; i++) {
+          p.translate(0, 0, 100);
+          p.rotateY(time * 0.5);
           p.model(forma4);
         }
       },
       () => {
-        for (i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
           p.translate(0, 0, 100);
           p.rotateX(150 * i);
           p.model(voronoi1);
         }
       },
       () => {
-        for (i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
           p.translate(0, 0, 50 * i);
           p.rotateY(time * 0.1);
           p.model(voronoi1);
@@ -278,54 +212,45 @@ let sketch = function (p) {
       },
       () => p.model(crater),
       () => {
-        for(i=0; i<10; i++){
-        p.translate(50*i,0,100);
-        p.rotateX(i)
-        p.rotateY(time*0.2+i);
-        p.model(head);
+        for (let i = 0; i < 10; i++) {
+          p.translate(50 * i, 0, 100);
+          p.rotateX(i);
+          p.rotateY(time * 0.2 + i);
+          p.model(head);
         }
-        },
-
+      },
       () => p.model(head),
       () => {
-        for(i=0; i<10; i++){
-        p.translate(50*i,0,100);
-        p.rotateX(i)
-        p.rotateY(time*0.2+i);
-        p.model(crater);
+        for (let i = 0; i < 10; i++) {
+          p.translate(50 * i, 0, 100);
+          p.rotateX(i);
+          p.rotateY(time * 0.2 + i);
+          p.model(crater);
         }
-        },
-
-
+      },
       () => p.model(mosca),
       () => {
-        for(i=0; i<10; i++){
-        p.translate(50*i,0,100);
-        p.rotateX(i)
-        p.rotateY(time*0.2+i);
-        p.model(crater);
+        for (let i = 0; i < 10; i++) {
+          p.translate(50 * i, 0, 100);
+          p.rotateX(i);
+          p.rotateY(time * 0.2 + i);
+          p.model(crater);
         }
-        },
-
+      },
       () => p.model(voronoi1),
       () => {
-        for(i=0; i<10; i++){
-        p.translate(50*i,0,100);
-        p.rotateX(i)
-        p.rotateY(time*0.2+i);
-        p.model(crater);
+        for (let i = 0; i < 10; i++) {
+          p.translate(50 * i, 0, 100);
+          p.rotateX(i);
+          p.rotateY(time * 0.2 + i);
+          p.model(crater);
         }
-        },
-
+      },
       () => {
         let x1 = p.map(p.mouseX, 0, p.width, 50, 300);
-        let y1 = p.map(p.mouseY, 0, p.height, 10, 200);
+        let y1 = p.map(p.mouseY, 0, p.height, 20, 200);
         p.torus(x1, y1);
       },
-
-
-
-
     ];
   };
 
@@ -335,81 +260,63 @@ let sketch = function (p) {
     elt = canvas.elt;
     s0.init({ src: elt });
 
+    /* SLIDERS */
+    let sliderHeight = 40;
+    let sliderWidth = 80;
+    let sliderMargin = 0.02;
 
-/* SLIDERS */
+    scale = p.createSlider(3, 10, 1);
+    scale.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 5 - sliderMargin * 5 - 0.1);
+    scale.style("width", sliderWidth + "px");
+    scale.style('-webkit-appearance', 'none');
+    scale.style('background-color', 'blue');
+    scale.style('border-radius', '5px');
+    scale.style('outline', 'none');
+    scale.style('opacity', '0.6');
+    scale.style('transition', 'opacity .2s');
 
+    rotX = p.createSlider(0, 2, 0, 0);
+    rotX.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 2 - sliderMargin * 2 - 0.1);
+    rotX.style("width", sliderWidth + "px");
+    rotX.style('-webkit-appearance', 'none');
+    rotX.style('background-color', 'blue');
+    rotX.style('border-radius', '5px');
+    rotX.style('outline', 'none');
+    rotX.style('opacity', '0.6');
+    rotX.style('transition', 'opacity .2s');
 
+    rotY = p.createSlider(0, 2, 1, 0);
+    rotY.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 3 - sliderMargin * 3 - 0.1);
+    rotY.style("width", sliderWidth + "px");
+    rotY.style('-webkit-appearance', 'none');
+    rotY.style('background-color', 'blue');
+    rotY.style('border-radius', '5px');
+    rotY.style('outline', 'none');
+    rotY.style('opacity', '0.6');
+    rotY.style('transition', 'opacity .2s');
 
+    rotZ = p.createSlider(0, 2, 0, 0);
+    rotZ.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 4 - sliderMargin * 4 - 0.1);
+    rotZ.style("width", sliderWidth + "px");
+    rotZ.style('-webkit-appearance', 'none');
+    rotZ.style('background-color', 'blue');
+    rotZ.style('border-radius', '5px');
+    rotZ.style('outline', 'none');
+    rotZ.style('opacity', '0.6');
+    rotZ.style('transition', 'opacity .2s');
 
-
-let sliderHeight = 40;
-let sliderWidth = 80;
-let sliderMargin = 0.02;
-
-scale = p.createSlider(3, 10, 1);
-scale.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 5  - sliderMargin * 5 - 0.1);
-scale.style("width", sliderWidth + "px");
-scale.style('-webkit-appearance', 'none');
-scale.style('background-color', 'blue');
-scale.style('border-radius', '5px');
-scale.style('outline', 'none');
-scale.style('opacity', '0.6');
-scale.style('transition', 'opacity .2s');
-
-
-
-rotX = p.createSlider(0, 2, 0, 0);
-rotX.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 2 - sliderMargin * 2 - 0.1);
-rotX.style("width", sliderWidth + "px");
-rotX.style('-webkit-appearance', 'none');
-rotX.style('background-color', 'blue');
-rotX.style('border-radius', '5px');
-rotX.style('outline', 'none');
-rotX.style('opacity', '0.6');
-rotX.style('transition', 'opacity .2s');
-
-
-rotY = p.createSlider(0, 2, 1, 0);
-rotY.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 3 - sliderMargin * 3 - 0.1);
-rotY.style("width", sliderWidth + "px");
-rotY.style('-webkit-appearance', 'none');
-rotY.style('background-color', 'blue');
-rotY.style('border-radius', '5px');
-rotY.style('outline', 'none');
-rotY.style('opacity', '0.6');
-rotY.style('transition', 'opacity .2s');
-
-
-rotZ = p.createSlider(0, 2, 0, 0);
-rotZ.position(p.windowWidth - sliderWidth - sliderMargin, p.windowHeight - sliderHeight * 4 - sliderMargin * 4 - 0.1);
-rotZ.style("width", sliderWidth + "px");
-rotZ.style('-webkit-appearance', 'none');
-rotZ.style('background-color', 'blue');
-rotZ.style('border-radius', '5px');
-rotZ.style('outline', 'none');
-rotZ.style('opacity', '0.6');
-rotZ.style('transition', 'opacity .2s');
-
-
-
-
-
-     /* BOTON */
-
+    /* BOTON */
     button = p.createButton(">>>");
-    button.position(5,5);
+    button.position(5, 5);
     button.mousePressed(changeModel);
     button.style("background-color", "rgba(0, 0, 255)");
     button.style("color", "rgba(255, 0, 102)");
     button.style("border", "none");
     button.style("border-radius", "30px");
-    button.style("hover-show" )
     button.style("z-index", "1");
 
     canvas.hide();
     p.background("rgba(0%,0%,0%,0)");
-
-    // models = [obj, skl, flor,torus1];
 
     changeModel();
   };
@@ -420,26 +327,15 @@ rotZ.style('transition', 'opacity .2s');
     let valRotY = rotY.value();
     let valRotZ = rotZ.value();
 
-    let locX = p.mouseX - p.height / 2;
-    let locY = p.mouseY - p.width / 2;
-
-    //p.ambientLight(60, 60, 60);
-    //p.pointLight(255, 255, 255, locX, locY, 100);
-
     p.scale(val);
     p.clear();
-    //p.orbitControl(50);
     p.noStroke();
-    //p.fill(255);
     p.normalMaterial();
-    //p.specularMaterial(250);
+
     p.rotateX(time * valRotX);
     p.rotateY(time * valRotY);
     p.rotateZ(time * valRotZ);
-    //p.torus(100);
-    //p.model(obj);
 
-    // p.model(randomModel);
     randomModel();
   };
 
@@ -447,6 +343,8 @@ rotZ.style('transition', 'opacity .2s');
     randomModel = p.random(models);
   };
 };
-new p5(sketch, "container");
 
-evalCode(lastCode);
+new p5(sketch, "p5ui");
+
+// Ejecutar el snippet inicial (con fallback si Hydra aún no terminó de arrancar)
+setTimeout(() => evalCode(cm.getValue()), 100);
